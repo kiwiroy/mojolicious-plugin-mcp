@@ -2,6 +2,15 @@ use Test::More;
 use Mojo::Base -strict;
 use Role::Tiny qw(does_role);
 
+package NoInheritance {
+  use Mojo::Base -base;
+  has description => 'No inheritance';
+  has code        => sub {
+    return sub {1}
+  };
+  has name => 'no_inheritance';
+};
+
 subtest 'Spec role applies' => sub {
   ok eval { require Test::Resource::Tail; 1; }, 'Test::Resource::Tail loads';
   ok eval { require Test::Tool::Echo;     1; }, 'Test::Tool::Echo loads';
@@ -40,6 +49,12 @@ subtest 'Spec role applies' => sub {
   is $spec->{name},        'ask',            'Prompt spec has correct name';
   is $prompt->description, 'Ask a question', 'Prompt object has correct description';
   is $prompt->name,        'ask',            'Prompt object has correct name';
+
+  my $no_inheritance = NoInheritance->with_roles('Mojolicious::Plugin::MCP::Role::Spec')->new;
+  is Role::Tiny::does_role($no_inheritance, 'Mojolicious::Plugin::MCP::Role::Spec'), 1, 'NoInheritance does role';
+  ok $no_inheritance->can('to_spec');
+  $spec = {$no_inheritance->to_spec};
+  is_deeply [sort keys %$spec], [], 'NoInheritance spec has no keys';
 };
 
 done_testing();
