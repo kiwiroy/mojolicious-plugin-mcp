@@ -1,4 +1,7 @@
+MANIFEST
+MANIFEST.bak
 Makefile
+Mojolicious-Plugin-MCP*
 MYMETA.*
 cpanfile.snapshot
 blib/
