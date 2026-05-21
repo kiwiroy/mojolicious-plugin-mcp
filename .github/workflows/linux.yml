@@ -27,4 +27,4 @@ jobs:
         run: |
           cpanm -n --installdeps .
       - name: Run tests
-        run: prove --norc -l -It/lib t
+        run: prove --norc -l -It/lib -v t
