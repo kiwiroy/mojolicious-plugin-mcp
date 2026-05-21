@@ -63,7 +63,19 @@ The default is `0.01` (The `$VERSION` of this module).
 The name of the helper method that returns the MCP Server instance. This can be used to avoid conflicts with other
 plugins or helpers.
 
-The default is `mcp`.
+The default is `mcp` as per ["mcp"](#mcp).
+
+# HELPERS
+
+[Mojolicious::Plugin::MCP](https://metacpan.org/pod/Mojolicious%3A%3APlugin%3A%3AMCP) provides the following helpers:
+
+## mcp
+
+    my $server = $c->mcp;
+
+Returns the [MCP::Server](https://metacpan.org/pod/MCP%3A%3AServer) instance, which can be used to subscribe to [events](https://metacpan.org/pod/MCP%3A%3AServer#EVENTS) or
+register further Prompts, Tools, and Resources. The name of this helper can be customized using the
+["mcp\_helper"](#mcp_helper) configuration option.
 
 # METHODS
 

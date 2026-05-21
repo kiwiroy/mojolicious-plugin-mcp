@@ -109,7 +109,19 @@ The default is C<0.01> (The C<$VERSION> of this module).
 The name of the helper method that returns the MCP Server instance. This can be used to avoid conflicts with other
 plugins or helpers.
 
-The default is C<mcp>.
+The default is C<mcp> as per L</"mcp">.
+
+=head1 HELPERS
+
+L<Mojolicious::Plugin::MCP> provides the following helpers:
+
+=head2 mcp
+
+  my $server = $c->mcp;
+
+Returns the L<MCP::Server> instance, which can be used to subscribe to L<events|MCP::Server/"EVENTS"> or
+register further Prompts, Tools, and Resources. The name of this helper can be customized using the
+L</"mcp_helper"> configuration option.
 
 =head1 METHODS
 
