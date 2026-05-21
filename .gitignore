@@ -1,5 +1,7 @@
 Makefile
 MYMETA.*
 cpanfile.snapshot
-/blib
-/local
+blib/
+cover_db/
+local/
+pm_to_blib

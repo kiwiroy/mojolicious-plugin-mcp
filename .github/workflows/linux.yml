@@ -26,5 +26,6 @@ jobs:
       - name: Install dependencies
         run: |
           cpanm -n --installdeps .
+          cpanm -n TAP::Formatter::GitHubActions
       - name: Run tests
-        run: prove --norc -l -It/lib -v t
+        run: prove --norc --formatter TAP::Formatter::GitHubActions -l -It/lib -v t
