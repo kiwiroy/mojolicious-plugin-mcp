@@ -5,7 +5,7 @@ Mojolicious::Plugin::MCP - Mojolicious Plugin to use with Model Context Protocol
 # SYNOPSIS
 
     # Mojolicious
-    $self->plugin(MCP => \%config);
+    $app->plugin(MCP => \%config);
 
     # Mojolicious::Lite
     plugin MCP => \%config;
@@ -16,8 +16,7 @@ Mojolicious::Plugin::MCP - Mojolicious Plugin to use with Model Context Protocol
 
 # ATTRIBUTES
 
-[Mojolicious::Plugin::MCP](https://metacpan.org/pod/Mojolicious%3A%3APlugin%3A%3AMCP) also inherits all attributes from [Mojolicious::Plugin](https://metacpan.org/pod/Mojolicious%3A%3APlugin) and implements the following new
-ones.
+[Mojolicious::Plugin::MCP](https://metacpan.org/pod/Mojolicious%3A%3APlugin%3A%3AMCP) inherits all attributes from [Mojolicious::Plugin](https://metacpan.org/pod/Mojolicious%3A%3APlugin) and implements the following new ones.
 
 ## mcp\_primitives
 
@@ -68,8 +67,7 @@ The default is `mcp`.
 
 # METHODS
 
-[Mojolicious::Plugin::MCP](https://metacpan.org/pod/Mojolicious%3A%3APlugin%3A%3AMCP) inherits all methods from
-[Mojolicious::Plugin](https://metacpan.org/pod/Mojolicious%3A%3APlugin) and implements the following new ones.
+[Mojolicious::Plugin::MCP](https://metacpan.org/pod/Mojolicious%3A%3APlugin%3A%3AMCP) inherits all methods from [Mojolicious::Plugin](https://metacpan.org/pod/Mojolicious%3A%3APlugin) and implements the following new ones.
 
 ## register
 

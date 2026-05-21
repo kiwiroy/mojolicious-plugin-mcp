@@ -51,7 +51,7 @@ Mojolicious::Plugin::MCP - Mojolicious Plugin to use with Model Context Protocol
 =head1 SYNOPSIS
 
   # Mojolicious
-  $self->plugin(MCP => \%config);
+  $app->plugin(MCP => \%config);
 
   # Mojolicious::Lite
   plugin MCP => \%config;
@@ -62,8 +62,7 @@ L<Mojolicious::Plugin::MCP> is a L<Mojolicious> plugin.
 
 =head1 ATTRIBUTES
 
-L<Mojolicious::Plugin::MCP> also inherits all attributes from L<Mojolicious::Plugin> and implements the following new
-ones.
+L<Mojolicious::Plugin::MCP> inherits all attributes from L<Mojolicious::Plugin> and implements the following new ones.
 
 =head2 mcp_primitives
 
@@ -114,8 +113,7 @@ The default is C<mcp>.
 
 =head1 METHODS
 
-L<Mojolicious::Plugin::MCP> inherits all methods from
-L<Mojolicious::Plugin> and implements the following new ones.
+L<Mojolicious::Plugin::MCP> inherits all methods from L<Mojolicious::Plugin> and implements the following new ones.
 
 =head2 register
 
