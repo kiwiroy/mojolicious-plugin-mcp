@@ -6,6 +6,8 @@ use MCP::Constants qw(PROTOCOL_VERSION);
 use Mojo::JSON     qw(to_json);
 
 use Mojolicious::Lite -signatures;
+use Mojo::File qw(curfile);
+use lib "@{[ curfile->sibling('lib')]}";
 
 eval {
   # Negative::Resource::Fail inherits from MCP::Tool!

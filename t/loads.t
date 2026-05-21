@@ -6,6 +6,8 @@ use MCP::Constants qw(PROTOCOL_VERSION);
 use Mojo::JSON     qw(to_json);
 
 use Mojolicious::Lite -signatures;
+use Mojo::File qw(curfile);
+use lib "@{[ curfile->sibling('lib')]}";
 
 plugin 'MCP' => {mcp_helper => 'mcp_server', namespace => 'Test', name => 'Test MCP Server', version => '3.14'};
 

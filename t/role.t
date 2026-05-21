@@ -1,6 +1,8 @@
 use Test::More;
 use Mojo::Base -strict;
 use Role::Tiny qw(does_role);
+use Mojo::File qw(curfile);
+use lib "@{[ curfile->sibling('lib')]}";
 
 package NoInheritance {
   use Mojo::Base -base;

@@ -6,7 +6,8 @@ use MCP::Client;
 use MCP::Constants qw(PROTOCOL_VERSION);
 
 use Mojolicious::Lite;
-
+use Mojo::File qw(curfile);
+use lib "@{[ curfile->sibling('lib')]}";
 plugin 'MCP';
 
 get '/' => sub {

@@ -1,6 +1,5 @@
 -l
 -Ilocal/lib/perl5
--It/lib
 -r
 -v
 t
