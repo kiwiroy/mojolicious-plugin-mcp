@@ -30,49 +30,30 @@ get '/' => sub {
 
 any '/mcp' => app->mcp_server->to_action;
 
-my $t = Test::Mojo->new;
+my $t = Test::Mojo->with_roles('+MCP')->new;
 
 subtest 'Server responds' => sub {
   $t->get_ok('/')->status_is(200)->content_is('Hello Mojo!');
   $t->get_ok('/mcp')->status_is(405)->json_is({error => "Method not allowed"});
 
-  my $client = MCP::Client->new(ua => $t->ua, url => $t->ua->server->url->path('/mcp'));
-  my $init   = $client->initialize_session;
-  $t->test(
-    is_deeply => $init,
-    {
-      protocolVersion => PROTOCOL_VERSION,
-      serverInfo      => {name    => 'Test MCP Server', version => '3.14'},
-      capabilities    => {prompts => {}, resources => {}, tools => {}},
-    },
-    'Initialization response is correct'
-  );
+  $t->mcp_client_init_ok('Test MCP Server', '3.14')->mcp_list_tools_ok->mcp_json_is({
+    tools => [{
+      description => 'echo',
+      inputSchema => to_json({
+        type       => 'object',
+        properties => {msg => {description => 'Message to echo', type => 'string'}},
+        required   => ['msg'],
+      }),
+      name         => 'echo',
+      outputSchema => to_json({
+        type       => 'object',
+        properties => {msg => {description => 'Echoed message', type => 'string'}},
+        required   => ['msg'],
+      }),
+    }],
+  });
 
-  my $result = $client->list_tools;
-  $t->test(
-    is_deeply => $result,
-    {
-      tools => [{
-        description => 'echo',
-        inputSchema => to_json({
-          type       => 'object',
-          properties => {msg => {description => 'Message to echo', type => 'string'}},
-          required   => ['msg'],
-        }),
-        name         => 'echo',
-        outputSchema => to_json({
-          type       => 'object',
-          properties => {msg => {description => 'Echoed message', type => 'string'}},
-          required   => ['msg'],
-        }),
-      }],
-    },
-    'Initialization response is correct'
-  );
-
-  $result = $client->list_resources;
-  $t->test(
-    is_deeply => $result,
+  $t->mcp_list_resources_ok->mcp_json_is(
     {
       resources => [{
         'description' => 'Tail a file',
@@ -84,9 +65,7 @@ subtest 'Server responds' => sub {
     'Initialization response is correct'
   );
 
-  $result = $client->list_prompts;
-  $t->test(
-    is_deeply => $result,
+  $t->mcp_list_prompts_ok->mcp_json_is(
     {
       'prompts' => [{
         'arguments'   => [{name => 'question', description => 'The question to ask', required => 1}],
@@ -99,13 +78,7 @@ subtest 'Server responds' => sub {
 };
 
 subtest 'Echo tool' => sub {
-  my $client = MCP::Client->new(ua => $t->ua, url => $t->ua->server->url->path('/mcp'));
-  my $init   = $client->initialize_session;
-  $t->test(ok => $init, 'Session initialized successfully');
-  my $result = $client->call_tool('echo', {msg => 'Hello, world!'});
-  $t->test(
-    'is_deeply',
-    $result,
+  $t->mcp_call_tool_ok('echo', {msg => 'Hello, world!'})->mcp_json_is(
     {
       'content' => [{'text' => 'Echo: Hello, world!', 'type' => 'text'}],
       'isError' => bless(do { \(my $o = 0) }, 'JSON::PP::Boolean')
@@ -115,28 +88,18 @@ subtest 'Echo tool' => sub {
 };
 
 subtest "Tail resource" => sub {
-  my $client = MCP::Client->new(ua => $t->ua, url => $t->ua->server->url->path('/mcp'));
-  my $init   = $client->initialize_session;
-  $t->test(ok => $init, 'Session initialized successfully');
-  my $result           = $client->read_resource('file:///var/log/syslog');
   my $expected_content = do { local (@ARGV, $/) = ('t/lib/Test/Resource/Tail.pm'); <> };
-  $t->test(
-    'is_deeply', $result,
+  $t->mcp_read_resource_ok('file:///var/log/syslog')
+    ->mcp_json_is(
     {contents => [{'text' => $expected_content, 'mimeType' => 'text/plain', uri => 'file:///var/log/syslog'},],},
-    'Tail resource response is correct'
-  );
+    'Tail resource response is correct');
 };
 
 subtest 'Ask prompt' => sub {
-  my $client = MCP::Client->new(ua => $t->ua, url => $t->ua->server->url->path('/mcp'));
-  my $init   = $client->initialize_session;
-  $t->test(ok => $init, 'Session initialized successfully');
-  my $result = $client->get_prompt('ask', {question => 'What is your name?'});
-  $t->test(
-    is_deeply => $result,
+  $t->mcp_get_prompt_ok('ask', {question => 'What is your name?'})
+    ->mcp_json_is(
     {'messages' => [{'content' => {'text' => 'You asked: What is your name?', 'type' => 'text'}, 'role' => 'user'}]},
-    'Ask prompt response is correct'
-  );
+    'Ask prompt response is correct');
 };
 
 done_testing();

@@ -8,6 +8,7 @@ use MCP::Constants qw(PROTOCOL_VERSION);
 use Mojolicious::Lite;
 use Mojo::File qw(curfile);
 use lib "@{[ curfile->sibling('lib')]}";
+
 plugin 'MCP';
 
 get '/' => sub {
@@ -18,23 +19,12 @@ get '/' => sub {
 any '/mcp' => app->mcp->to_action;
 
 
-my $t = Test::Mojo->new;
+my $t = Test::Mojo->with_roles('+MCP')->new;
 
 subtest 'Server responds' => sub {
   $t->get_ok('/')->status_is(200)->content_is('Hello Mojo!');
   $t->get_ok('/mcp')->status_is(405)->json_is({error => "Method not allowed"});
-  my $client = MCP::Client->new(ua => $t->ua, url => $t->ua->server->url->path('/mcp'));
-  my $result = $client->initialize_session;
-  $t->test(
-    'is_deeply',
-    $result,
-    {
-      protocolVersion => PROTOCOL_VERSION,
-      serverInfo      => {name    => 'MCP Server', version => $Mojolicious::Plugin::MCP::VERSION},
-      capabilities    => {prompts => {}, resources => {}, tools => {}},
-    },
-    'Initialization response is correct'
-  );
+  $t->mcp_client_init_ok('MCP Server', $Mojolicious::Plugin::MCP::VERSION);
 };
 
 done_testing();
