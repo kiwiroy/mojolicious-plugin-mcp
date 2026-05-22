@@ -1,0 +1,88 @@
+=encoding utf8
+
+=head1 NAME
+
+Test::Mojo::Role::MCP - Role for testing MCP Servers with Test::Mojo
+
+=head1 DESCRIPTION
+
+L<Test::Mojo::Role::MCP> is a role for L<Test::Mojo> that provides helper methods for testing MCP Servers. It includes
+methods for initializing the MCP Client and listing prompts, resources, and tools.
+
+=head1 ATTRIBUTES
+
+L<Test::Mojo::Role::MCP> composes the following attributes:
+
+=head2 mcp_client
+
+  my $client = $test->mcp_client;
+
+Returns an instance of L<MCP::Client> initialized with the test's user agent and the MCP endpoint.
+
+=head2 mcp_path
+
+  my $path = $test->mcp_path;
+
+The path to the MCP endpoint. Defaults to C</mcp>.
+
+=head2 mcp_res
+
+  my $response = $test->mcp_res;
+
+Stores the response of the last MCP Client operation for inspection in tests.
+
+=head1 METHODS
+
+L<Test::Mojo::Role::MCP> composes the following methods:
+
+=head2 mcp_call_tool_ok
+
+  $test->mcp_call_tool_ok($tool, $args, $desc);
+
+Calls a tool on the MCP Server with the given arguments and checks that the response is a hash reference.
+
+=head2 mcp_client_init_ok
+
+  $test->mcp_client_init_ok($name, $version, $desc);
+
+Initializes the MCP Client and checks that the response matches the expected server name and version.
+
+=head2 mcp_get_prompt_ok
+
+  $test->mcp_get_prompt_ok($prompt, $args, $desc);
+
+Gets a prompt from the MCP Server with the given arguments and checks that the response is a hash reference.
+
+=head2 mcp_list_prompts_ok
+
+  $test->mcp_list_prompts_ok($desc);
+
+Lists the prompts available from the MCP Server and checks that the response is a hash reference.
+
+=head2 mcp_list_resources_ok
+
+  $test->mcp_list_resources_ok($desc);
+
+Lists the resources available from the MCP Server and checks that the response is a hash reference.
+
+=head2 mcp_list_tools_ok
+
+  $test->mcp_list_tools_ok($desc);
+
+Lists the tools available from the MCP Server and checks that the response is a hash reference.
+
+=head2 mcp_json_is
+
+  $test->mcp_json_is($expect, $desc);
+
+Checks that the last MCP Client response matches the expected data structure.
+
+=head2 mcp_read_resource_ok
+
+  $test->mcp_read_resource_ok($uri, $desc);
+
+Reads a resource from the MCP Server with the given URI and checks that the response is a hash reference.
+
+
+=cut
+
