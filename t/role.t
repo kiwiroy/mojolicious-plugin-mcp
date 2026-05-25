@@ -1,4 +1,5 @@
 use Test::More;
+use Test::Mojo;
 use Mojo::Base -strict;
 use Role::Tiny qw(does_role);
 use Mojo::File qw(curfile);
@@ -57,6 +58,27 @@ subtest 'Spec role applies' => sub {
   ok $no_inheritance->can('to_spec');
   $spec = {$no_inheritance->to_spec};
   is_deeply [sort keys %$spec], [], 'NoInheritance spec has no keys';
+};
+
+subtest 'MCP test role' => sub {
+  my $t = Test::Mojo->with_roles('+MCP')->new;
+  ok $t->can('mcp_client_init_ok'),    'Test::Mojo with MCP role can initialize client';
+  ok $t->can('mcp_list_tools_ok'),     'Test::Mojo with MCP role can list tools';
+  ok $t->can('mcp_list_resources_ok'), 'Test::Mojo with MCP role can list resources';
+  ok $t->can('mcp_list_prompts_ok'),   'Test::Mojo with MCP role can list prompts';
+
+  $t->mcp_path('/custom_mcp_path');
+  is $t->mcp_path, '/custom_mcp_path', 'MCP path can be set and retrieved';
+  is $t->mcp_res,  undef,              'MCP response attribute is initialized to undef';
+  subtest 'JSON tests' => sub {
+    local $t->{mcp_res} = {foo => 'bar', baz => [1, 2, 3]};
+    $t->mcp_json_is('/foo', 'bar')
+      ->mcp_json_is({foo => 'bar', baz => [1, 2, 3]})
+      ->mcp_json_is('/baz/1', 2)
+      ->mcp_json_is('/nonexistent', undef, 'Nonexistent path returns undef')
+      ->mcp_json_like('/foo', qr/^ba/, 'JSON path matches regex')
+      ->mcp_json_unlike('/foo', qr/^qu/, 'JSON path does not match regex');
+  };
 };
 
 done_testing();

@@ -62,44 +62,36 @@ subtest 'Server responds' => sub {
         'uri'         => 'file:///var/log/syslog'
       }]
     },
-    'Initialization response is correct'
   );
 
-  $t->mcp_list_prompts_ok->mcp_json_is(
-    {
-      'prompts' => [{
-        'arguments'   => [{name => 'question', description => 'The question to ask', required => 1}],
-        'description' => 'Ask a question',
-        'name'        => 'ask'
-      }]
-    },
-    'Initialization response is correct'
-  );
+  $t->mcp_list_prompts_ok->mcp_json_is({
+    'prompts' => [{
+      'arguments'   => [{name => 'question', description => 'The question to ask', required => 1}],
+      'description' => 'Ask a question',
+      'name'        => 'ask'
+    }]
+  });
 };
 
 subtest 'Echo tool' => sub {
-  $t->mcp_call_tool_ok('echo', {msg => 'Hello, world!'})->mcp_json_is(
-    {
-      'content' => [{'text' => 'Echo: Hello, world!', 'type' => 'text'}],
-      'isError' => bless(do { \(my $o = 0) }, 'JSON::PP::Boolean')
-    },
-    'Echo tool response is correct'
-  );
+  $t->mcp_call_tool_ok('echo', {msg => 'Hello, world!'})->mcp_json_is({
+    'content' => [{'text' => 'Echo: Hello, world!', 'type' => 'text'}],
+    'isError' => bless(do { \(my $o = 0) }, 'JSON::PP::Boolean')
+  });
 };
 
 subtest "Tail resource" => sub {
   my $expected_content = do { local (@ARGV, $/) = ('t/lib/Test/Resource/Tail.pm'); <> };
   $t->mcp_read_resource_ok('file:///var/log/syslog')
+    ->mcp_json_is('/contents/0/uri', 'file:///var/log/syslog')
     ->mcp_json_is(
-    {contents => [{'text' => $expected_content, 'mimeType' => 'text/plain', uri => 'file:///var/log/syslog'},],},
-    'Tail resource response is correct');
+    {contents => [{'text' => $expected_content, 'mimeType' => 'text/plain', uri => 'file:///var/log/syslog'},],});
 };
 
 subtest 'Ask prompt' => sub {
   $t->mcp_get_prompt_ok('ask', {question => 'What is your name?'})
     ->mcp_json_is(
-    {'messages' => [{'content' => {'text' => 'You asked: What is your name?', 'type' => 'text'}, 'role' => 'user'}]},
-    'Ask prompt response is correct');
+    {'messages' => [{'content' => {'text' => 'You asked: What is your name?', 'type' => 'text'}, 'role' => 'user'}]});
 };
 
 done_testing();

@@ -57,9 +57,21 @@ sub mcp_list_tools_ok ($self, $desc = 'MCP Client listed tools successfully') {
   return $self->mcp_res($client->list_tools)->test(is => ref $self->mcp_res, 'HASH', $desc);
 }
 
-sub mcp_json_is ($self, $expect, $desc = 'MCP Client response matches expected') {
+sub mcp_json_is ($self, @args) {
+  my ($p, $expect) = @args > 1 ? (shift(@args), shift(@args)) : ('', shift(@args));
+  my $desc = shift(@args) || 'MCP Client response matches expected';
   local $Test::Builder::Level = $Test::Builder::Level + 1;
-  return $self->test(is_deeply => $self->mcp_res, $expect, $desc);
+  return $self->test(is_deeply => $self->_mcp_json($p), $expect, $desc);
+}
+
+sub mcp_json_like ($self, $p, $regex, $desc = 'MCP Client response matches regex') {
+  local $Test::Builder::Level = $Test::Builder::Level + 1;
+  return $self->test(like => $self->_mcp_json($p), $regex, $desc);
+}
+
+sub mcp_json_unlike ($self, $p, $regex, $desc = 'MCP Client response does not match regex') {
+  local $Test::Builder::Level = $Test::Builder::Level + 1;
+  return $self->test(unlike => $self->_mcp_json($p), $regex, $desc);
 }
 
 sub mcp_read_resource_ok ($self, $uri, $desc = 'MCP Client read resource successfully') {
@@ -73,6 +85,11 @@ sub _client_init ($self) {
   $self->{initialised}{$client} ||= $client->initialize_session;
   delete $self->{mcp_res};
   return $client;
+}
+
+sub _mcp_json ($self, $pointer = '') {
+  my $data = $self->mcp_res;
+  return $pointer ? Mojo::JSON::Pointer->new($data)->get($pointer) : $data;
 }
 
 1;

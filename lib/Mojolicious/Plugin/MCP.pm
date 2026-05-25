@@ -4,7 +4,7 @@ use Mojo::Base 'Mojolicious::Plugin', -signatures;
 use Mojo::Loader qw(find_modules find_packages load_class);
 use MCP::Server;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 has mcp_primitives => sub {
   +{map { $_ => "MCP::$_" } qw(Resource Prompt Tool)};
